@@ -45,6 +45,15 @@ async function run() {
       const result = await usersCollection.insertOne(userInfo);
       res.send(result);
     });
+
+    //get bookings
+    app.get("/mytasks", async (req, res) => {
+      const email = req.query.email;
+      console.log("Email is:", email);
+      const query = { createdEmail: email };
+      const tasks = await tasksCollection.find(query).toArray();
+      res.send(tasks);
+    });
   } finally {
   }
 }
