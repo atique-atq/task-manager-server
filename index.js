@@ -21,11 +21,28 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const tasksCollection = client.db("task-tracer").collection("tasks");
+    const usersCollection = client.db("task-tracer").collection("users");
     //post a task
     app.post("/task", async (req, res) => {
-        console.log('came here..');
+      console.log("came here..");
       const task = req.body;
       const result = await tasksCollection.insertOne(task);
+      res.send(result);
+    });
+
+    // insert user
+    app.post("/saveusers", async (req, res) => {
+      const userInfo = req.body;
+
+      //checking if user with same email address already inserted
+      const query = { email: userInfo.email };
+      const alreadyBooked = await usersCollection.find(query).toArray();
+      if (alreadyBooked.length) {
+        const message = `Already registered with email ${userInfo.email}`;
+        return res.send({ acknowledged: false, message });
+      }
+
+      const result = await usersCollection.insertOne(userInfo);
       res.send(result);
     });
   } finally {
