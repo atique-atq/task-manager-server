@@ -53,6 +53,13 @@ async function run() {
       res.send(tasks);
     });
 
+    //get all completed tasks
+    app.get("/completedtasks", async (req, res) => {
+      const query = { status:  "completed" };
+      const tasks = await tasksCollection.find(query).toArray();
+      res.send(tasks);
+    });
+
     //get my tasks
     app.get("/mytasks", async (req, res) => {
       const email = req.query.email;
