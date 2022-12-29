@@ -46,7 +46,15 @@ async function run() {
       res.send(result);
     });
 
-    //get bookings
+    //get all tasks
+    app.get("/alltasks", async (req, res) => {
+      console.log("shob dekhtesi");
+      const query = {};
+      const tasks = await tasksCollection.find(query).toArray();
+      res.send(tasks);
+    });
+
+    //get my tasks
     app.get("/mytasks", async (req, res) => {
       const email = req.query.email;
       console.log("Email is:", email);
