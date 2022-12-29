@@ -46,10 +46,9 @@ async function run() {
       res.send(result);
     });
 
-    //get all tasks
-    app.get("/alltasks", async (req, res) => {
-      console.log("shob dekhtesi");
-      const query = {};
+    //get all pending/todo tasks
+    app.get("/todotasks", async (req, res) => {
+      const query = { status: { $ne: "completed" } };
       const tasks = await tasksCollection.find(query).toArray();
       res.send(tasks);
     });
@@ -61,6 +60,20 @@ async function run() {
       const query = { createdEmail: email };
       const tasks = await tasksCollection.find(query).toArray();
       res.send(tasks);
+    });
+
+    //complete a task
+    app.put("/complete", async (req, res) => {
+      const id = req.query.id;
+      console.log("id is:", id);
+      const filter = { _id: ObjectId(id) };
+      const completeTask = {
+        $set: {
+          status: "completed",
+        },
+      };
+      const result = await tasksCollection.updateOne(filter, completeTask);
+      res.send(result);
     });
   } finally {
   }
