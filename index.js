@@ -55,7 +55,7 @@ async function run() {
 
     //get all completed tasks
     app.get("/completedtasks", async (req, res) => {
-      const query = { status:  "completed" };
+      const query = { status: "completed" };
       const tasks = await tasksCollection.find(query).toArray();
       res.send(tasks);
     });
@@ -81,6 +81,29 @@ async function run() {
       };
       const result = await tasksCollection.updateOne(filter, completeTask);
       res.send(result);
+    });
+
+    //make task not completed
+    app.put("/notcomplete", async (req, res) => {
+      const id = req.query.id;
+      console.log("id is:", id);
+      const filter = { _id: ObjectId(id) };
+      const completeTask = {
+        $set: {
+          status: "not completed",
+        },
+      };
+      const result = await tasksCollection.updateOne(filter, completeTask);
+      res.send(result);
+    });
+
+    //get specific task
+    app.get("/details/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const task = await tasksCollection.findOne(query);
+      console.log('single task', task);
+      res.send(task);
     });
   } finally {
   }
