@@ -102,8 +102,16 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const task = await tasksCollection.findOne(query);
-      console.log('single task', task);
+      console.log("single task", task);
       res.send(task);
+    });
+
+    //delete a  task
+    app.delete("/delete", async (req, res) => {
+      const id = req.query.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await tasksCollection.deleteOne(filter);
+      res.send(result);
     });
   } finally {
   }
